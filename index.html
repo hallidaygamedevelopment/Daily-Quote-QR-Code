@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Daily Quote</title>
+
+<style>
+body{
+    margin:0;
+    background:black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+img{
+    max-width:90%;
+    max-height:90%;
+}
+</style>
+
+</head>
+
+<body>
+
+<img id="quote">
+
+<script>
+
+const quotes = [
+"quotes/1.jpg",
+"quotes/2.jpg",
+"quotes/3.jpg",
+"quotes/4.jpg"
+];
+
+const day = Math.floor(Date.now() / 86400000);
+const todayQuote = quotes[day % quotes.length];
+
+document.getElementById("quote").src = todayQuote;
+
+</script>
+
+</body>
+</html>
