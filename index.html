@@ -24,22 +24,41 @@
 <img id="quote" alt="Daily Quote">
 
 <script>
-const username = "hallidaygamedevelopment"; // your GitHub username
-const repo = "Daily-Quote-QR-Code";         // your repository name
-const folder = "quotes";                    // folder name in repo
+const username = "hallidaygamedevelopment"; // Your GitHub username
+const repo = "Daily-Quote-QR-Code";        // Your repository name
+const folder = "quotes";                   // Folder name with images
 
-// Fetch all files in the quotes folder using GitHub API
+// Shuffle function (Fisher-Yates)
+function shuffle(array) {
+  let m = array.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+  return array;
+}
+
 fetch(`https://api.github.com/repos/${username}/${repo}/contents/${folder}`)
-  .then(response => response.json())
+  .then(res => res.json())
   .then(data => {
-    // Filter for image files (png, jpg, jpeg)
+    // Filter only image files
     const images = data
-      .filter(file => /\.(png|jpg|jpeg)$/i.test(file.name))
-      .map(file => file.download_url);
+      .filter(f => /\.(png|jpg|jpeg)$/i.test(f.name))
+      .map(f => f.download_url);
 
-    // Pick today’s image
+    if(images.length === 0) {
+      console.error("No images found in the folder!");
+      return;
+    }
+
+    // Shuffle the array once
+    const shuffled = shuffle(images.slice());
+
+    // Pick today's image without repeating until all images are shown
     const day = Math.floor(Date.now() / 86400000);
-    const todayQuote = images[day % images.length];
+    const todayQuote = shuffled[day % shuffled.length];
 
     document.getElementById("quote").src = todayQuote;
   })
