@@ -1,44 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Daily Quote</title>
-
-<style>
-body{
-    margin:0;
-    background:black;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-
-img{
-    max-width:90%;
-    max-height:90%;
-}
-</style>
-
+  <meta charset="UTF-8">
+  <title>Daily Quote</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+  </style>
 </head>
-
 <body>
 
-<img id="quote">
+<img id="quote" alt="Daily Quote">
 
 <script>
+const username = "hallidaygamedevelopment"; // your GitHub username
+const repo = "Daily-Quote-QR-Code";         // your repository name
+const folder = "quotes";                    // folder name in repo
 
-const quotes = [
-"quotes/quote1.png",
-"quotes/quote2.png",
-"quotes/quote3.png",
-"quotes/quote4.png"
-];
+// Fetch all files in the quotes folder using GitHub API
+fetch(`https://api.github.com/repos/${username}/${repo}/contents/${folder}`)
+  .then(response => response.json())
+  .then(data => {
+    // Filter for image files (png, jpg, jpeg)
+    const images = data
+      .filter(file => /\.(png|jpg|jpeg)$/i.test(file.name))
+      .map(file => file.download_url);
 
-const day = Math.floor(Date.now() / 86400000);
-const todayQuote = quotes[day % quotes.length];
+    // Pick today’s image
+    const day = Math.floor(Date.now() / 86400000);
+    const todayQuote = images[day % images.length];
 
-document.getElementById("quote").src = todayQuote;
-
+    document.getElementById("quote").src = todayQuote;
+  })
+  .catch(err => console.error("Error fetching quotes:", err));
 </script>
 
 </body>
